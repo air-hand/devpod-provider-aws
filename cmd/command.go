@@ -121,6 +121,19 @@ func (cmd *CommandCmd) Run(
 		return err
 	}
 
+	// try session manager
+	if providerAws.Config.UseSessionManager {
+		client, err := ssh.NewSSHClient("devpod", providerAws.Config.MachineID, privateKey)
+		if err != nil {
+			logs.Debugf("error connecting by session manager: %v", err)
+			return err
+		}
+
+		defer client.Close()
+		return ssh.Run(ctx, client, command, os.Stdin, os.Stdout, os.Stderr)
+
+	}
+
 	// try public ip
 	if instance.Reservations[0].Instances[0].PublicIpAddress != nil {
 		ip := *instance.Reservations[0].Instances[0].PublicIpAddress
