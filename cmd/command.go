@@ -123,6 +123,26 @@ func (cmd *CommandCmd) Run(
 
 	// try session manager
 	if providerAws.Config.UseSessionManager {
+		instanceID := *instance.Reservations[0].Instances[0].InstanceId
+
+		cancelCtx, cancel := context.WithCancel(ctx)
+		defer cancel()
+		connectArgs := []string{
+			"ssm",
+			"start-session",
+			"--target", instanceID,
+			"--document-name", "AWS-StartSSHSession",
+		}
+
+		cmd := exec.CommandContext(cancelCtx, "aws", connectArgs...)
+		// open tunnel in background
+		if err := cmd.Start(); err != nil {
+			return fmt.Errorf("start tunnel: %w", err)
+		}
+		defer func() {
+			err = cmd.Process.Kill()
+		}()
+
 		client, err := ssh.NewSSHClient("devpod", providerAws.Config.MachineID, privateKey)
 		if err != nil {
 			logs.Debugf("error connecting by session manager: %v", err)
