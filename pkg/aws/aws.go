@@ -480,6 +480,10 @@ func CreateDevpodSecurityGroup(ctx context.Context, provider *AwsProvider) (stri
 
 	groupID := *result.GroupId
 
+	if provider.Config.UseSessionManager {
+		return groupID, nil
+	}
+
 	// Add permissions to the security group
 	_, err = svc.AuthorizeSecurityGroupIngress(ctx, &ec2.AuthorizeSecurityGroupIngressInput{
 		GroupId: aws.String(groupID),
