@@ -134,21 +134,25 @@ func (cmd *CommandCmd) Run(
 			return err
 		}
 
-		addr := "localhost:" + port
-		connectArgs := []string{
-			"ssm",
-			"start-session",
-			"--target", instanceID,
-			// "--document-name", "AWS-StartSSHSession",
-			// "--parameters", "'--portNumber=22'",
-			"--document-name", "AWS-StartPortForwardingSession",
-			"--parameters", fmt.Sprintf("'portNumber=22,localPortNumber=%s'", port),
+		addr := fmt.Sprintf("localhost:%s", port)
+		connectArgs, err := aws.CommandArgsSSMTunneling(instanceID, port)
+		if err != nil {
+			return err
 		}
-
-		// logs.Infof("connecting to instance %s with port forwarding", instanceID)
-		//logs.Infof("%v", connectArgs)
+		logs.Infof("%v", connectArgs)
 		cmd := exec.CommandContext(cancelCtx, "aws", connectArgs...)
+		//		output, err := cmd.CombinedOutput()
 		// open tunnel in background
+		if err != nil {
+			//			logs.Infof("%v", string(output))
+			return fmt.Errorf("start tunnel: %w", err)
+		}
+		//		stdout, _ := cmd.StdoutPipe()
+		//		defer stdout.Close()
+		//		defer logs.Info(io.ReadAll(stdout))
+		//		stderr, _ := cmd.StderrPipe()
+		//		defer stderr.Close()
+		//		defer logs.Info(io.ReadAll(stderr))
 		if err = cmd.Start(); err != nil {
 			return fmt.Errorf("start tunnel: %w", err)
 		}
@@ -161,12 +165,11 @@ func (cmd *CommandCmd) Run(
 
 		client, err := ssh.NewSSHClient("devpod", addr, privateKey)
 		if err != nil {
-			logs.Debugf("error connecting by session manager: %v", err)
+			logs.Infof("error connecting by session manager: %v", err)
 			return err
 		}
 
 		defer client.Close()
-		//logs.Infof("ssh run")
 		return ssh.Run(ctx, client, command, os.Stdin, os.Stdout, os.Stderr)
 	}
 

@@ -1,1 +1,7 @@
-{"image":"mcr.microsoft.com/devcontainers/go","build":{}}
+{
+    "image":"mcr.microsoft.com/devcontainers/go",
+    "mounts": [
+        "source=devpod-provider-aws--home,target=/home/vscode,type=volume",
+        "source=${localEnv:HOME}/.aws,target=/home/vscode/.aws,type=bind,consistency=cached"
+    ]
+}
