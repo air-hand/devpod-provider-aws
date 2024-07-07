@@ -139,20 +139,20 @@ func (cmd *CommandCmd) Run(
 		if err != nil {
 			return err
 		}
-		logs.Infof("%v", connectArgs)
+		logs.Debugf("%v", connectArgs)
 		cmd := exec.CommandContext(cancelCtx, "aws", connectArgs...)
 		//		output, err := cmd.CombinedOutput()
 		// open tunnel in background
 		if err != nil {
-			//			logs.Infof("%v", string(output))
+			//			logs.Debugf("%v", string(output))
 			return fmt.Errorf("start tunnel: %w", err)
 		}
 		//		stdout, _ := cmd.StdoutPipe()
 		//		defer stdout.Close()
-		//		defer logs.Info(io.ReadAll(stdout))
+		//		defer logs.Debug(io.ReadAll(stdout))
 		//		stderr, _ := cmd.StderrPipe()
 		//		defer stderr.Close()
-		//		defer logs.Info(io.ReadAll(stderr))
+		//		defer logs.Debug(io.ReadAll(stderr))
 		if err = cmd.Start(); err != nil {
 			return fmt.Errorf("start tunnel: %w", err)
 		}
@@ -165,7 +165,7 @@ func (cmd *CommandCmd) Run(
 
 		client, err := ssh.NewSSHClient("devpod", addr, privateKey)
 		if err != nil {
-			logs.Infof("error connecting by session manager: %v", err)
+			logs.Debugf("error connecting by session manager: %v", err)
 			return err
 		}
 
