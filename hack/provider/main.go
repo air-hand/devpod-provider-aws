@@ -28,6 +28,11 @@ func main() {
 	releaseVersion := os.Args[1]
 	buildVersion := os.Args[2]
 	projectRoot := os.Args[3]
+	githubOwner, found := os.LookupEnv("GITHUB_OWNER")
+	if !found {
+		fmt.Fprintln(os.Stderr, "Expected GITHUB_OWNER environment variable")
+		os.Exit(1)
+	}
 
 	content, err := os.ReadFile(providerConfigPath(buildVersion))
 	if err != nil {
@@ -35,6 +40,7 @@ func main() {
 	}
 
 	replaced := strings.Replace(string(content), "##VERSION##", releaseVersion, -1)
+	replaced = strings.Replace(replaced, "##GITHUB_OWNER##", githubOwner, -1)
 
 	if buildVersion == "dev" {
 		replaced = strings.Replace(replaced, "##PROJECT_ROOT##", projectRoot, -1)

@@ -8,6 +8,7 @@ PROVIDER_ROOT=$(git rev-parse --show-toplevel)
 COMMIT_HASH=$(git rev-parse --short HEAD 2>/dev/null)
 DATE=$(date "+%Y-%m-%d")
 BUILD_PLATFORM=$(uname -a | awk '{print tolower($1);}')
+GITHUB_OWNER=${GITHUB_OWNER:-"loft-sh"}
 
 echo "Current working directory is $(pwd)"
 echo "PATH is $PATH"

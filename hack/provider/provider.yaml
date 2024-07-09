@@ -272,7 +272,7 @@ agent:
     AWS_PROVIDER:
       - os: linux
         arch: amd64
-        path: https://github.com/loft-sh/devpod-provider-aws/releases/download/##VERSION##/devpod-provider-aws-linux-amd64
+        path: https://github.com/##GITHUB_OWNER##/devpod-provider-aws/releases/download/##VERSION##/devpod-provider-aws-linux-amd64
         checksum: ##CHECKSUM_LINUX_AMD64##
   exec:
     shutdown: |-
@@ -281,7 +281,7 @@ binaries:
   AWS_PROVIDER:
     - os: linux
       arch: amd64
-      path: https://github.com/loft-sh/devpod-provider-aws/releases/download/##VERSION##/devpod-provider-aws-linux-amd64
+      path: https://github.com/##GITHUB_OWNER##/devpod-provider-aws/releases/download/##VERSION##/devpod-provider-aws-linux-amd64
       checksum: ##CHECKSUM_LINUX_AMD64##
 exec:
   init: ${AWS_PROVIDER} init
