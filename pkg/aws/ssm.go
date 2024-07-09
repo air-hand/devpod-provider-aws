@@ -22,14 +22,12 @@ func CommandArgsSSMTunneling(instanceID string, localPort string) ([]string, err
 		return []string{}, err
 	}
 
-	//	parameters_escaped := strings.ReplaceAll(string(parameters_as_json), "\"", "\\\"")
 	parameters_escaped := strings.ReplaceAll(string(parameters_as_json), "\"", "\"")
 
 	return []string{
 		"ssm", "start-session",
 		"--target", instanceID,
 		"--document-name", "AWS-StartPortForwardingSession",
-		//		fmt.Sprintf("--parameters=\"%s\"", parameters_escaped),
 		fmt.Sprintf("--parameters=%s", parameters_escaped),
 	}, nil
 }
