@@ -157,7 +157,7 @@ func (cmd *CommandCmd) Run(
 			return fmt.Errorf("start tunnel: %w", err)
 		}
 		defer func() {
-			err = cmd.Cancel()
+			err = cmd.Process.Kill()
 		}()
 		timeoutCtx, cancelFn := context.WithTimeout(ctx, 30*time.Second)
 		defer cancelFn()
